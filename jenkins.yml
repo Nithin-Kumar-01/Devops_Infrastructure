@@ -1,0 +1,35 @@
+---
+- name: To install jenkins
+  hosts: test
+  become: true
+
+  tasks:
+          - name: Install java
+            apt:
+                    name: openjdk-11-jre
+                    state: present
+
+          - name: Install jenkins dependencies
+            shell: |
+                curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+                /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+                echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+                https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+                /etc/apt/sources.list.d/jenkins.list > /dev/null
+          
+          - name: update ubuntu system
+            shell: apt-get update
+          
+          - name : install jenkins
+            apt:
+                    name: jenkins
+                    state: present
+          
+          - name: start jenkins service
+            service:
+                    name: jenkins
+                    state: started
+          
+          - name: Copy intial jenkins password to jenkins-pasword file in target system
+            shell: cat /var/lib/jenkins/secrets/initialAdminPassword >> jenkins-intialpassword.txt
+                  
