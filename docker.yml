@@ -1,15 +1,21 @@
 ---
 - name: install docker
-  hosts: test
+  hosts: localhost
   become: true
 
   tasks:
           - name: Remove old docker and dependencies
-            shell: apt-get remove docker docker-engine docker.io
+            apt:
+                    name: 
+                         - docker 
+                         - docker-engine 
+                         - docker.io
+                    state: absent
             ignore_errors: yes
 
           - name: ubuntu update
-            shell: apt-get update
+            apt:
+                    update_cache: yes
 
           - name: install docker
             shell: apt install docker.io -y

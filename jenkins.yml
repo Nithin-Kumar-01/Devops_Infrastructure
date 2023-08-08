@@ -1,9 +1,20 @@
 ---
-- name: To install jenkins
+- name: To clean install jenkins 
   hosts: test
   become: true
 
-  tasks:
+  tasks:       
+     
+          - name: uninstall old jenkins
+            apt:
+                    name: jenkins
+                    purge: yes
+                    state: absent
+
+          - name: update ubuntu system
+            apt:
+                    update_cache: yes
+
           - name: Install java
             apt:
                     name: openjdk-11-jre
@@ -16,10 +27,7 @@
                 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
                 https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
                 /etc/apt/sources.list.d/jenkins.list > /dev/null
-          
-          - name: update ubuntu system
-            shell: apt-get update
-          
+                    
           - name : install jenkins
             apt:
                     name: jenkins
